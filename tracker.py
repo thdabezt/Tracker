@@ -4,8 +4,9 @@ import certifi
 from bs4 import BeautifulSoup
 
 URL = "https://uet.vnu.edu.vn/category/sinh-vien/giao-luu-trao-doi-sinh-vien/"
-WEBHOOK_URL = "https://discord.com/api/webhooks/1342442566888591370/55Zpu3WQbXkSbHcC5EHxntq1cLUdQ0Ojryj11EIcJAY5tHiw79aIGsGCXE2bsFE-ytBC"
+WEBHOOK_URL = "YOUR_DISCORD_WEBHOOK_URL"  # Replace with your actual Webhook URL
 LAST_POST_FILE = "last_post.txt"
+DISCORD_USER_ID = "586892544583925782"  # Your Discord User ID for pings
 
 def fetch_latest_article():
     """Fetch the latest article from the website with SSL verification."""
@@ -42,12 +43,15 @@ def save_last_post(url):
     with open(LAST_POST_FILE, "w", encoding="utf-8") as file:
         file.write(url)
 
-def send_discord_notification(article):
-    """Send a notification to Discord webhook."""
-    message = {
-        "content": f"<@586892544583925782> 🆕 **New Blog Post:** {article['title']}\n🔗 {article['link']}"
-    }
-    response = requests.post(WEBHOOK_URL, json=message)
+def send_discord_notification(message, ping_user=False):
+    """Send a notification to Discord webhook. Pings the user if needed."""
+    content = message
+    if ping_user:
+        content = f"<@{DISCORD_USER_ID}> {message}"  # Ping user
+
+    payload = {"content": content}
+    
+    response = requests.post(WEBHOOK_URL, json=payload)
     if response.status_code == 204:
         print("✅ Discord notification sent successfully.")
     else:
@@ -60,6 +64,7 @@ def check_for_updates():
     latest_article = fetch_latest_article()
     if not latest_article:
         print("✅ Website check complete. No new articles found.")
+        send_discord_notification("✅ Website check complete. No new articles found.")
         return
 
     last_post_url = read_last_post()
@@ -67,10 +72,14 @@ def check_for_updates():
     if latest_article["link"] != last_post_url:
         print(f"✅ New post found: {latest_article['title']}")
         print(f"📌 Link: {latest_article['link']}")
-        send_discord_notification(latest_article)
+        send_discord_notification(
+            f"🆕 **New Blog Post:** {latest_article['title']}\n🔗 {latest_article['link']}",
+            ping_user=True
+        )
         save_last_post(latest_article["link"])
     else:
         print("✅ Website check complete. No new articles found.")
+        send_discord_notification("✅ Website check complete. No new articles found.")
 
 if __name__ == "__main__":
     check_for_updates()
