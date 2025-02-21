@@ -22,6 +22,8 @@ jobs:
 
       - name: Install dependencies
         run: pip install requests beautifulsoup4
-
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4 certifi
       - name: Run the script
         run: python tracker.py
