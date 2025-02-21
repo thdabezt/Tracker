@@ -1,29 +1,37 @@
-name: Website Update Checker
+name: Track Blog Updates
 
 on:
   schedule:
-    - cron: "*/30 * * * *"  # Runs every 30 minutes
-  workflow_dispatch:  # Allows manual trigger
-  push:  # Runs when code is pushed to the repo
-    branches:
-      - main
+    - cron: '*/30 * * * *'  # Runs every 30 minutes
+  workflow_dispatch:  # Allows manual runs
 
 jobs:
-  run-script:
+  check_updates:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.x"
+          python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests beautifulsoup4
-      - name: Install dependencies
-        run: |
-          pip install requests beautifulsoup4 certifi
-      - name: Run the script
+        run: pip install -r requirements.txt
+
+      - name: Load last post from GitHub Secrets
+        run: echo "$LAST_POST_URL" > last_post.txt
+        env:
+          LAST_POST_URL: ${{ secrets.LAST_POST_URL }}
+
+      - name: Run tracker script
         run: python tracker.py
+
+      - name: Save latest post URL to GitHub Secret
+        run: |
+          LATEST_POST=$(cat last_post.txt)
+          gh secret set LAST_POST_URL --body "$LATEST_POST"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
