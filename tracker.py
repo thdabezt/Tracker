@@ -9,8 +9,13 @@ WEBHOOK_URL = "https://discord.com/api/webhooks/1342442566888591370/55Zpu3WQbXkS
 DATA_FILE = "tracked_data.json"
 
 def fetch_latest_articles():
-    """Fetch latest articles from the website."""
-    response = requests.get(URL, verify=certifi.where())  # Use certifi for SSL verification
+    """Fetch latest articles from the website with SSL verification fixes."""
+    try:
+        response = requests.get(URL, verify=certifi.where())  # Use certifi for SSL verification
+    except requests.exceptions.SSLError:
+        print("⚠️ SSL Verification Failed. Retrying without verification...")
+        response = requests.get(URL, verify=False)  # Fallback method
+
     soup = BeautifulSoup(response.text, "html.parser")
 
     articles = []
