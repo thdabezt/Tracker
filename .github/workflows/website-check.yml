@@ -21,17 +21,13 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Load last post from GitHub Secrets
-        run: echo "$LAST_POST_URL" > last_post.txt
-        env:
-          LAST_POST_URL: ${{ secrets.LAST_POST_URL }}
-
       - name: Run tracker script
         run: python tracker.py
 
-      - name: Save latest post URL to GitHub Secret
+      - name: Commit and Push last_post.txt if Updated
         run: |
-          LATEST_POST=$(cat last_post.txt)
-          gh secret set LAST_POST_URL --body "$LATEST_POST"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add last_post.txt
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update last post URL"
+          git push
