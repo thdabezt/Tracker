@@ -4,7 +4,7 @@ import certifi
 from bs4 import BeautifulSoup
 
 URL = "https://uet.vnu.edu.vn/category/sinh-vien/giao-luu-trao-doi-sinh-vien/"
-WEBHOOK_URL = "YOUR_DISCORD_WEBHOOK_URL"
+WEBHOOK_URL = "https://discord.com/api/webhooks/1342442566888591370/55Zpu3WQbXkSbHcC5EHxntq1cLUdQ0Ojryj11EIcJAY5tHiw79aIGsGCXE2bsFE-ytBC"
 LAST_POST_FILE = "last_post.txt"
 
 def fetch_latest_article():
