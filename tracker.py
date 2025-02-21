@@ -24,6 +24,8 @@ def fetch_latest_article():
         title = article.text.strip()
         link = article["href"]
         return {"title": title, "link": link}
+    
+    print("❌ No articles found on the website.")
     return None
 
 def read_last_post():
@@ -31,6 +33,8 @@ def read_last_post():
     if os.path.exists(LAST_POST_FILE):
         with open(LAST_POST_FILE, "r", encoding="utf-8") as file:
             return file.read().strip()
+    
+    print("🔍 last_post.txt not found. Assuming first run.")
     return None
 
 def save_last_post(url):
@@ -43,23 +47,30 @@ def send_discord_notification(article):
     message = {
         "content": f"<@586892544583925782> 🆕 **New Blog Post:** {article['title']}\n🔗 {article['link']}"
     }
-    requests.post(WEBHOOK_URL, json=message)
+    response = requests.post(WEBHOOK_URL, json=message)
+    if response.status_code == 204:
+        print("✅ Discord notification sent successfully.")
+    else:
+        print(f"⚠️ Failed to send Discord notification. Status: {response.status_code}, Response: {response.text}")
 
 def check_for_updates():
     """Check for new articles and send notification if updated."""
+    print("🔄 Checking for new blog posts...")
+    
     latest_article = fetch_latest_article()
     if not latest_article:
-        print("❌ No new articles found.")
+        print("✅ Website check complete. No new articles found.")
         return
 
     last_post_url = read_last_post()
 
     if latest_article["link"] != last_post_url:
         print(f"✅ New post found: {latest_article['title']}")
+        print(f"📌 Link: {latest_article['link']}")
         send_discord_notification(latest_article)
         save_last_post(latest_article["link"])
     else:
-        print("🔄 No new updates.")
+        print("✅ Website check complete. No new articles found.")
 
 if __name__ == "__main__":
     check_for_updates()
