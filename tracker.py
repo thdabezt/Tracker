@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 URL = "https://uet.vnu.edu.vn/category/sinh-vien/giao-luu-trao-doi-sinh-vien/"
 
 # Your Discord Webhook URL
-WEBHOOK_URL = "YOUR_DISCORD_WEBHOOK_URL"
+WEBHOOK_URL = "https://discord.com/api/webhooks/1342442566888591370/55Zpu3WQbXkSbHcC5EHxntq1cLUdQ0Ojryj11EIcJAY5tHiw79aIGsGCXE2bsFE-ytBC"
 
 # File to store last posted article
 LAST_POST_FILE = "last_post.txt"
