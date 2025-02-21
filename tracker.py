@@ -4,7 +4,7 @@ import certifi
 from bs4 import BeautifulSoup
 
 URL = "https://uet.vnu.edu.vn/category/sinh-vien/giao-luu-trao-doi-sinh-vien/"
-WEBHOOK_URL = "YOUR_DISCORD_WEBHOOK_URL"  # Replace with your actual Webhook URL
+WEBHOOK_URL = "https://discord.com/api/webhooks/1342442566888591370/55Zpu3WQbXkSbHcC5EHxntq1cLUdQ0Ojryj11EIcJAY5tHiw79aIGsGCXE2bsFE-ytBC"  # Replace with your actual Webhook URL
 LAST_POST_FILE = "last_post.txt"
 DISCORD_USER_ID = "586892544583925782"  # Your Discord User ID for pings
 
